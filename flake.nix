@@ -18,7 +18,7 @@
           # normally stuff goes in here
         ];
         shellHook = ''
-              export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath([pkgs.openssl])}
+              export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath([pkgs.openssl pkgs.libuv])}
             '';
       };
   };
