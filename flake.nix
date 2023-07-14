@@ -1,5 +1,5 @@
 {
-  description = "Search CVE from the command line and a web app";
+  description = "A modern Couchdb 3.x Client.";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
