@@ -1,0 +1,54 @@
+#+title: Readme
+
+* cl-couch
+A modern couchdb library for common lisp. Reasons for writing this is that [[https://github.com/cmoore/cl-mango/tree/master][cl-mango]] was out of date, still works but missing modern features.
+So this was formed and written.
+
+
+** TODO Test API's
+I dont have a good testing setup yet.
+** TODO Support APIs [0/4]
+*** TODO Server API [20/24]
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#active-tasks
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#up
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#all-dbs
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#dbs-info
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#cluster-setup
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#db-updates
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#membership
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#replication-operation
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#scheduler-jobs
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#scheduler-docs
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#get--_scheduler-docs-replicator_db
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#get--_scheduler-docs-replicator_db-docid
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#node-node-name
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#node-node-name-stats
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#node-node-name-prometheus
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#node-node-name-system
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#node-node-name-restart
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#node-node-name-versions
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#search-analyze
++ [ ] https://docs.couchdb.org/en/latest/api/server/common.html#nouveau-analyze
++ [ ] https://docs.couchdb.org/en/latest/api/server/common.html#utils
++ [ ] https://docs.couchdb.org/en/latest/api/server/common.html#uuids
++ [ ] https://docs.couchdb.org/en/latest/api/server/common.html#favicon-ico
++ [X] https://docs.couchdb.org/en/latest/api/server/common.html#reshard
+**** TODO Authentication [1/5]
++ [ ] https://docs.couchdb.org/en/latest/api/server/authn.html#basic-authentication
++ [X] https://docs.couchdb.org/en/latest/api/server/authn.html#cookie-authentication
++ [-] https://docs.couchdb.org/en/latest/api/server/authn.html#proxy-authentication
++ [-] https://docs.couchdb.org/en/latest/api/server/authn.html#jwt-authentication
+*** TODO Database api [13/13]
++ [X] https://docs.couchdb.org/en/latest/api/database/common.html#db
++ [X] https://docs.couchdb.org/en/latest/api/database/common.html#get--db
++ [X] https://docs.couchdb.org/en/latest/api/database/bulk-api.html#db-all-docs
++ [X] https://docs.couchdb.org/en/latest/api/database/bulk-api.html#db-design-docs
++ [X] https://docs.couchdb.org/en/latest/api/database/bulk-api.html#db-bulk-get
++ [X] https://docs.couchdb.org/en/latest/api/database/bulk-api.html#db-bulk-docs
++ [X] https://docs.couchdb.org/en/latest/api/database/find.html#db-find
++ [X] https://docs.couchdb.org/en/latest/api/database/find.html#db-index
++ [X] https://docs.couchdb.org/en/latest/api/database/find.html#db-explain
++ [X] https://docs.couchdb.org/en/latest/api/database/shard.html
++ [X] https://docs.couchdb.org/en/latest/api/database/shard.html#db-shards-docid
++ [X] https://docs.couchdb.org/en/latest/api/database/shard.html#db-sync-shards
++ [ ] https://docs.couchdb.org/en/latest/api/database/changes.html

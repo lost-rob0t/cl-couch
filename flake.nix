@@ -15,14 +15,11 @@
           pkg-config
           roswell
           sbcl
-          gcc
-          quicklispPackagesClisp.cffi-grovel
-          libuv
-          lispPackages.cl-libuv
+
           # normally stuff goes in here
         ];
         shellHook = ''
-              export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath([pkgs.openssl])}:${pkgs.lib.makeLibraryPath([pkgs.libuv])}
+              export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath([pkgs.openssl])}
             '';
       };
   };
