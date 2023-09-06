@@ -186,9 +186,17 @@
         (couchdb-request client (format nil "/~a" database) :method :head)
         t)
     (dexador:http-request-not-found nil)))
+
+(defmethod document-exists-p ((client couchdb-client) database document)
+  (handler-case
+      (progn
+        (couchdb-request client (format nil "/~a/~a" database document) :method :head)
+        t)
+    (dexador:http-request-not-found nil)))
+
 (defmethod get-database ((client couchdb-client) database)
 
-        (couchdb-request client (format nil "/~a" database)))
+  (couchdb-request client (format nil "/~a" database)))
 (defmethod create-database ((client couchdb-client) name &key
                                                            (q 1)
                                                            (n 1)
@@ -259,7 +267,7 @@
 
 ;; documents is the full request object
 (defmethod bulk-create-documents ((client couchdb-client) database documents)
-  (couchdb-request client (quri:make-uri :path (format nil "/~a/_bulk_docs" database) :method :post :content documents)))
+  (couchdb-request client (quri:make-uri :path (format nil "/~a/_bulk_docs" database)) :method :post :content documents))
 
 (defmethod bulk-create-documents* ((client couchdb-client) database documents &key (new-edits "false"))
   (bulk-create-documents client database (jsown:to-json (jsown:new-js ("docs" documents) ("new_edits" new-edits)))))
@@ -331,3 +339,7 @@
 
 (defmethod get-document* ((client couchdb-client) database id)
   (jsown:parse (couchdb-request client (quri:make-uri :path (format nil "/~a/~a" database id)))))
+
+
+;; TODO Update document
+;; You can always just  upload doc with create and include the _rev
