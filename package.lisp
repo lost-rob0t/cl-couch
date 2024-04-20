@@ -55,4 +55,7 @@
    :PROXY-AUTH
            :ACTIVE-TASKS
    :DATABASE-SHARDS
-           :MANGO-DELETE-INDEX))
+           :MANGO-DELETE-INDEX
+   :couchdb-client
+           :fts-search
+   :fts-search*))
