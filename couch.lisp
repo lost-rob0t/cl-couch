@@ -5,7 +5,7 @@
 (defvar +fv-long-poll+ "longpoll")
 (defvar +fv-continuous+ "continuous")
 (defvar +fv-event-source+ "eventsource")
-(defvar +batch-non+ "")
+(defvar +batch-non+ nil)
 (defvar +batch-ok+ "ok")
 
 (defvar +update-true+ "true")
@@ -47,13 +47,13 @@
                                          (accept "application/json")
                                          (preserve-uri))
   `(let ((resp
-             (dexador:request (quri:merge-uris ,path (couchdb-url ,client))
-                              :method ,method :headers (couchdb-headers ,client) :content ,content :cookie-jar (couchdb-cookie ,client) :want-stream ,stream :keep-alive ,keep-alive :force-binary ,force-binary)))
+           (dexador:request (quri:merge-uris ,path (couchdb-url ,client))
+                            :method ,method :headers (couchdb-headers ,client) :content ,content :cookie-jar (couchdb-cookie ,client) :want-stream ,stream :keep-alive ,keep-alive :force-binary ,force-binary)))
 
 
 
-       resp))
-  
+     resp))
+
 
 
 (defun safe-alist (alist)
@@ -142,7 +142,7 @@
 
 (defmethod cluster-setup ((client couchdb-client) &key (ensure-databases nil))
   (let ((uri (quri:make-uri :path "/_cluster_setup" :query (quri:url-encode-params (safe-alist `(("ensure-databases" . ,ensure-databases)))))))
-   (couchdb-request client uri)))
+    (couchdb-request client uri)))
 
 (defmethod scheduler-jobs ((client couchdb-client) &key (limit 0) (skip 0))
   (let ((uri (quri:make-uri :path "/_scheduler/jobs" :query (quri:url-encode-params `(("limit" . ,limit) ("skip" . ,skip))))))
@@ -284,9 +284,9 @@
   (jsown:parse (mango-find client database query-obj :explain explain)))
 
 (defmethod create-mango-index ((client couchdb-client) database index-obj &key (design-document-name nil)
-                                                                        (name nil)
-                                                                        (type nil)
-                                                                        (partitioned "false"))
+                                                                            (name nil)
+                                                                            (type nil)
+                                                                            (partitioned "false"))
   (couchdb-request client (quri:make-uri :path (format nil "/~a/_index" database) :query (quri:url-encode-params (safe-alist `(
                                                                                                                                ("design-document-name" . ,design-document-name)
                                                                                                                                ("name" . ,name)
@@ -330,8 +330,8 @@
 
 ;; Convert doc to json and insert
 (defmethod create-document* ((client couchdb-client) database doc &key (batch +batch-non+))
-  (couchdb-request client (quri:make-uri :path (format nil "/~a" database)  :query (quri:url-encode-params `(("batch" . ,batch))))
-                :method :post :content (jsown:to-json* doc)))
+  (couchdb-request client (quri:make-uri :path (format nil "/~a" database))
+                   :method :post :content (jsown:to-json* doc)))
 
 (defmethod get-document ((client couchdb-client) database id)
   (couchdb-request client (quri:make-uri :path (format nil "/~a/~a" database id))))
@@ -343,3 +343,10 @@
 
 ;; TODO Update document
 ;; You can always just  upload doc with create and include the _rev
+
+(defmethod fts-search ((client couchdb-client) query db ddoc search-name)
+  (couchdb-request client (quri:make-uri :path (format nil "/~a/_design/~a/_search/~a" db ddoc search-name))
+                   :content query :method :post))
+
+(defmethod fts-search* ((client couchdb-client) query db ddoc search-name)
+  (jsown:parse (fts-search client query db ddoc search-name)))
