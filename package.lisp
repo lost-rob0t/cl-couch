@@ -58,4 +58,5 @@
            :MANGO-DELETE-INDEX
    :couchdb-client
            :fts-search
-   :fts-search*))
+   :fts-search*
+           :get-view))
