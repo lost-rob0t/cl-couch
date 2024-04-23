@@ -252,6 +252,11 @@
                                                                                                                                           ("update_seq" . ,update_seq))))))
       (couchdb-request client (quri:make-uri :path (format nil "/~a/_design_docs/" database)) :method :post :content (jsown:to-json* (jsown:new-js
                                                                                                                                        ("keys" keys))))))
+
+(defmethod get-view ((client couchdb-client) database ddoc view query)
+  "Invoke a query to a map reduce view."
+  (couchdb-request client (format nil "/~a/_design/~a/_view/~a" database ddoc view) :content query :method :post))
+
 (defmethod database-documents ((client couchdb-client) database)
   (couchdb-request client (format nil "/~a/_all_docs" database)))
 
