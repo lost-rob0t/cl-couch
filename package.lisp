@@ -81,4 +81,7 @@
            :database-all-documents
    :delete-database*
            :delete-document
-   :delete-document*))
+   :delete-document*
+           :get-view*
+   :changes*
+           :changes))

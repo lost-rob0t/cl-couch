@@ -122,6 +122,88 @@
                                                                                                ("heartbeat" . ,heartbeat)))))))
     (couchdb-request client uri)))
 
+(defmethod changes ((client couchdb-client) database &key
+                                                       (doc-ids nil)
+                                                       (conflicts nil)
+                                                       (descending nil)
+                                                       (feed "normal")
+                                                       (filter nil)
+                                                       (heartbeat nil)
+                                                       (include-docs nil)
+                                                       (attachments nil)
+                                                       (att-encoding-info nil)
+                                                       (last-event-id nil)
+                                                       (limit nil)
+                                                       (since 0)
+                                                       (style "main_docs")
+                                                       (timeout nil)
+                                                       (view nil)
+                                                       (seq-interval nil))
+  (let ((uri (quri:make-uri :path (format nil "/~a/_changes" database)
+                            :query (quri:url-encode-params
+                                    (safe-alist
+                                     `(("doc_ids" . ,(when doc-ids (jsown:to-json doc-ids)))
+                                       ("conflicts" . ,conflicts)
+                                       ("descending" . ,descending)
+                                       ("feed" . ,feed)
+                                       ("filter" . ,filter)
+                                       ("heartbeat" . ,heartbeat)
+                                       ("include_docs" . ,include-docs)
+                                       ("attachments" . ,attachments)
+                                       ("att_encoding_info" . ,att-encoding-info)
+                                       ("last-event-id" . ,last-event-id)
+                                       ("limit" . ,limit)
+                                       ("since" . ,since)
+                                       ("style" . ,style)
+                                       ("timeout" . ,timeout)
+                                       ("view" . ,view)
+                                       ("seq_interval" . ,seq-interval)))))))
+    (multiple-value-bind (body status headers uri stream)
+        (dex:request (quri:merge-uris uri (couchdb-url client))
+                     :method :get
+                     :headers (couchdb-headers client)
+                     :cookie-jar (couchdb-cookie client)
+                     :keep-alive t
+                     :want-stream t)
+      (declare (ignore body status headers))
+      (values uri stream))))
+
+(defmethod changes* ((client couchdb-client) database &key
+                                                        (doc-ids nil)
+                                                        (conflicts nil)
+                                                        (descending nil)
+                                                        (feed "normal")
+                                                        (filter nil)
+                                                        (heartbeat 1)
+                                                        (include-docs nil)
+                                                        (attachments nil)
+                                                        (att-encoding-info nil)
+                                                        (last-event-id nil)
+                                                        (limit nil)
+                                                        (since "now")
+                                                        (style "now")
+                                                        (timeout nil)
+                                                        (view nil)
+                                                        (seq-interval nil))
+  (jsown:parse
+   (changes client database
+            :doc-ids doc-ids
+            :conflicts conflicts
+            :descending descending
+            :feed feed
+            :filter filter
+            :heartbeat heartbeat
+            :include-docs include-docs
+            :attachments attachments
+            :att-encoding-info att-encoding-info
+            :last-event-id last-event-id
+            :limit limit
+            :since since
+            :style style
+            :timeout timeout
+            :view view
+            :seq-interval seq-interval)))
+
 (defmethod updates* ((client couchdb-client) feed-type &key (timeout 60) (since "now") (heartbeat 60000))
   (jsown:parse (updates client feed-type :timeout timeout :since since :heartbeat heartbeat)))
 
@@ -322,9 +404,15 @@
       (couchdb-request client (quri:make-uri :path (format nil "/~a/_design_docs/" database)) :method :post :content (jsown:to-json* (jsown:new-js
                                                                                                                                        ("keys" keys))))))
 
-(defmethod get-view ((client couchdb-client) database ddoc view query)
+(defmethod get-view ((client couchdb-client) database ddoc view query &key (group nil) (group-level nil))
   "Invoke a query to a map reduce view."
-  (couchdb-request client (format nil "/~a/_design/~a/_view/~a" database ddoc view) :content query :method :post))
+  (couchdb-request client (quri:make-uri :path (format nil "/~a/_design/~a/_view/~a" database ddoc view) :query (when group (quri:url-encode-params (list
+                                                                                                                                                     (cons "group" "true")))))
+                   :content query :method :post))
+
+(defmethod get-view* ((client couchdb-client) database ddoc view query-obj &key (group nil) (group-level nil))
+  "Invoke a query to a map reduce view."
+  (get-view client database ddoc view (jsown:to-json query-obj) :group group :group-level group-level))
 
 (defmethod database-all-documents ((client couchdb-client) database)
   (couchdb-request client (format nil "/~a/_all_docs" database)))
