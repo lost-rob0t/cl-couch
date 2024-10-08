@@ -71,7 +71,7 @@
 
 (defmethod password-auth ((client couchdb-client) username password)
   (let ((resp (couchdb-request client (quri:make-uri :path "/_session") :method :post :content (jsown:to-json* (jsown:new-js ("username" username)
-                                                                                                                 ("password" password))))))
+                                                                                                                             ("password" password))))))
     resp))
 (defmethod jwt-auth ((client couchdb-client) token)
   (setf (couchdb-headers client) (push (cons "Authorization" (format nil "Bearer ~a" token)) (couchdb-headers client))))
@@ -110,7 +110,7 @@
 
 (defmethod info* ((client couchdb-client) keys)
   (jsown:parse (couchdb-request client (quri:make-uri :path "/_dbs_info") :method :post :content (jsown:to-json* (jsown:new-js
-                                                                                                                   ("keys" keys))))))
+                                                                                                                  ("keys" keys))))))
 (defmethod info ((client couchdb-client) content)
   (couchdb-request client (quri:make-uri :path "/_dbs_info") :method :post :content content))
 
@@ -246,8 +246,6 @@
 
 (defmethod cluster-setup* ((client couchdb-client) &key (ensure-databases nil))
   (jsown:parse (cluster-setup client :ensure-databases ensure-databases)))
-
-
 
 (defmethod scheduler-jobs ((client couchdb-client) &key (limit 0) (skip 0))
   (let ((uri (quri:make-uri :path "/_scheduler/jobs" :query (quri:url-encode-params `(("limit" . ,limit) ("skip" . ,skip))))))
@@ -402,7 +400,7 @@
                                                                                                                                           ("skip" . ,skip)
                                                                                                                                           ("update_seq" . ,update_seq))))))
       (couchdb-request client (quri:make-uri :path (format nil "/~a/_design_docs/" database)) :method :post :content (jsown:to-json* (jsown:new-js
-                                                                                                                                       ("keys" keys))))))
+                                                                                                                                      ("keys" keys))))))
 
 (defmethod get-view ((client couchdb-client) database ddoc view query &key (group nil) (group-level nil))
   "Invoke a query to a map reduce view."
@@ -427,8 +425,8 @@
 
 (defmethod bulk-get-documents* ((client couchdb-client) database documents &key (revs "false"))
   (bulk-get-documents client database (jsown:to-json* (jsown:new-js
-                                                        ("docs" (mapcar #'(lambda (id)
-                                                                            (jsown:new-js ("id" id))) documents))))))
+                                                       ("docs" (mapcar #'(lambda (id)
+                                                                           (jsown:new-js ("id" id))) documents))))))
 
 
 
@@ -490,12 +488,12 @@
 ;;; CRUD
 
 
+
 (defmethod create-document ((client couchdb-client) database doc)
   (couchdb-request client (quri:make-uri :path (format nil "/~a" database))
                    :method :post :content doc))
 
 
-;; Convert doc to json and insert
 (defmethod create-document* ((client couchdb-client) database doc)
   (jsown:parse (create-document client database (jsown:to-json* doc))))
 
@@ -513,7 +511,7 @@
 (defmethod update-document ((client couchdb-client) database new-document revision)
   (couchdb-request client (quri:make-uri :path (format nil "/~a/" database))
                    :method :put :content (jsown:to-json* (jsown:extend-js (jsown:parse new-document)
-                                                           ("_rev" revision)))))
+                                                                          ("_rev" revision)))))
 
 (defmethod update-document* ((client couchdb-client) database new-document revision)
   (jsown:parse (couchdb-request client (quri:make-uri :path (format nil "/~a" database))
