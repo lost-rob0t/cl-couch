@@ -76,7 +76,6 @@
 (defmethod jwt-auth ((client couchdb-client) token)
   (setf (couchdb-headers client) (push (cons "Authorization" (format nil "Bearer ~a" token)) (couchdb-headers client))))
 
-;; TODO I should make a macro for updating the headers
 (defmethod proxy-auth ((client couchdb-client) username token roles)
   (setf (couchdb-headers client) (push (cons "X-Auth-CouchDB-Roles" (format nil "~{~a^,~}" roles)) (couchdb-headers client)))
   (setf (couchdb-headers client) (push (cons "X-Auth-CouchDB-UserName" username) (couchdb-headers client)))
