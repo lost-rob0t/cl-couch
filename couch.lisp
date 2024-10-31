@@ -70,9 +70,9 @@
   (setf (couchdb-cookie client) (cl-cookie:make-cookie-jar)))
 
 (defmethod password-auth ((client couchdb-client) username password)
-  (let ((resp (couchdb-request client (quri:make-uri :path "/_session") :method :post :content (jsown:to-json* (jsown:new-js ("username" username)
-                                                                                                                             ("password" password))))))
+  (let ((resp (couchdb-request client (quri:make-uri :path "/_session") :method :post :content (jsown:to-json (jsown:new-js ("username" username) ("password" password))))))
     resp))
+
 (defmethod jwt-auth ((client couchdb-client) token)
   (setf (couchdb-headers client) (push (cons "Authorization" (format nil "Bearer ~a" token)) (couchdb-headers client))))
 
