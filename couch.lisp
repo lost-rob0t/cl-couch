@@ -109,7 +109,7 @@
 
 (defmethod info* ((client couchdb-client) keys)
   (jsown:parse (couchdb-request client (quri:make-uri :path "/_dbs_info") :method :post :content (jsown:to-json* (jsown:new-js
-                                                                                                                  ("keys" keys))))))
+                                                                                                                   ("keys" keys))))))
 (defmethod info ((client couchdb-client) content)
   (couchdb-request client (quri:make-uri :path "/_dbs_info") :method :post :content content))
 
@@ -399,7 +399,7 @@
                                                                                                                                           ("skip" . ,skip)
                                                                                                                                           ("update_seq" . ,update_seq))))))
       (couchdb-request client (quri:make-uri :path (format nil "/~a/_design_docs/" database)) :method :post :content (jsown:to-json* (jsown:new-js
-                                                                                                                                      ("keys" keys))))))
+                                                                                                                                       ("keys" keys))))))
 
 (defmethod get-view ((client couchdb-client) database ddoc view query &key (group nil) (group-level nil))
   "Invoke a query to a map reduce view."
@@ -424,8 +424,8 @@
 
 (defmethod bulk-get-documents* ((client couchdb-client) database documents &key (revs "false"))
   (bulk-get-documents client database (jsown:to-json* (jsown:new-js
-                                                       ("docs" (mapcar #'(lambda (id)
-                                                                           (jsown:new-js ("id" id))) documents))))))
+                                                        ("docs" (mapcar #'(lambda (id)
+                                                                            (jsown:new-js ("id" id))) documents))))))
 
 
 
@@ -510,7 +510,7 @@
 (defmethod update-document ((client couchdb-client) database new-document revision)
   (couchdb-request client (quri:make-uri :path (format nil "/~a/" database))
                    :method :put :content (jsown:to-json* (jsown:extend-js (jsown:parse new-document)
-                                                                          ("_rev" revision)))))
+                                                           ("_rev" revision)))))
 
 (defmethod update-document* ((client couchdb-client) database new-document revision)
   (jsown:parse (couchdb-request client (quri:make-uri :path (format nil "/~a" database))
@@ -524,14 +524,12 @@
 (defmethod copy-document* ((client couchdb-client) database id new-id revision)
   (jsown:parse (copy-document client database id new-id revision)))
 
-(defmethod delete-document ((client couchdb-client) database id)
-  (couchdb-request client (quri:make-uri :path (format nil "/~a/~a" database id))
+(defmethod delete-document ((client couchdb-client) database id rev)
+  (couchdb-request client (quri:make-uri :path (format nil "/~a/~a" database id) :query (quri:url-encode-params (safe-alist `((rev . ,rev)))))
                    :method :delete))
 
-(defmethod delete-document* ((client couchdb-client) database id)
-  (jsown:parse (delete-document client database id)))
-;; TODO Update document
-;; You can always just  upload doc with create and include the _rev
+(defmethod delete-document* ((client couchdb-client) database id rev)
+  (jsown:parse (delete-document client database id rev)))
 
 (defmethod fts-search ((client couchdb-client) query db ddoc search-name)
   (couchdb-request client (quri:make-uri :path (format nil "/~a/_design/~a/_search/~a" db ddoc search-name))
