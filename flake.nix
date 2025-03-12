@@ -13,14 +13,12 @@
       pkgs.mkShell {
         buildInputs = with pkgs; [
           pkg-config
-          roswell
           sbcl
-
-          # normally stuff goes in here
         ];
-        shellHook = ''
-              export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath([pkgs.openssl])}
-            '';
-      };
+
+    LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [
+              pkgs.openssl
+            ];
+        };
   };
 }
